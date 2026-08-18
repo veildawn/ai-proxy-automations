@@ -1,0 +1,110 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/veildawn/ai-proxy-automations/main/schemas/automation-v3.schema.json",
+  "title": "AI Proxy automation Manifest v3",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["manifest_version", "id", "type", "version", "name", "description", "publisher", "signature", "provides", "modules"],
+  "properties": {
+    "manifest_version": {"const": 3},
+    "id": {"$ref": "#/$defs/slug"},
+    "type": {"const": "automation"},
+    "version": {"type": "string", "minLength": 1},
+    "name": {"$ref": "#/$defs/text"},
+    "description": {"$ref": "#/$defs/text"},
+    "homepage": {"type": "string", "format": "uri"},
+    "author": {"type": "string"},
+    "publisher": {"$ref": "#/$defs/slug"},
+    "min_app_version": {"type": "string"},
+    "docs": {"$ref": "#/$defs/text"},
+    "icon": {"type": "string"},
+    "signature": {"$ref": "#/$defs/signature"},
+    "depends": {"type": "array", "maxItems": 8, "items": {"$ref": "#/$defs/dependency"}},
+    "settings": {"type": "array", "items": {"$ref": "#/$defs/setting"}},
+    "modules": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/module"}},
+    "provides": {"$ref": "#/$defs/provides"}
+  },
+  "$defs": {
+    "slug": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"},
+    "key": {"type": "string", "pattern": "^[a-z][a-z0-9_]{0,63}$"},
+    "text": {"type": "object", "required": ["en"], "minProperties": 1, "additionalProperties": {"type": "string", "minLength": 1}},
+    "signature": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["alg", "key_id", "sig"],
+      "properties": {
+        "alg": {"const": "ed25519"},
+        "key_id": {"type": "string", "pattern": "^ed25519:[0-9a-f]{16}$"},
+        "sig": {"type": "string", "pattern": "^[A-Za-z0-9+/]{86}==$"}
+      }
+    },
+    "dependency": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id"],
+      "properties": {"id": {"$ref": "#/$defs/slug"}, "range": {"type": "string"}}
+    },
+    "provides": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["jobs"],
+      "properties": {"jobs": {"type": "array", "minItems": 1, "items": {"$ref": "#/$defs/job"}}}
+    },
+    "job": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "module", "schedule"],
+      "properties": {
+        "key": {"$ref": "#/$defs/key"},
+        "name": {"$ref": "#/$defs/text"},
+        "module": {"$ref": "#/$defs/key"},
+        "schedule": {"type": "string", "minLength": 1},
+        "timeout": {"type": "string", "pattern": "^[1-9][0-9]*(ns|us|µs|ms|s|m|h)$"},
+        "capabilities": {"$ref": "#/$defs/capabilities"},
+        "disabled": {"type": "boolean"}
+      }
+    },
+    "capabilities": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "http": {"type": "array", "uniqueItems": true, "items": {"type": "string", "pattern": "^(\\*\\.)?[A-Za-z0-9.-]+$"}},
+        "read": {"type": "array", "uniqueItems": true, "items": {"enum": ["accounts", "quota", "usage", "catalog"]}},
+        "write": {"type": "array", "uniqueItems": true, "items": {"enum": ["catalog_prices", "account_state", "quota_refresh"]}},
+        "notify": {"type": "boolean"}
+      }
+    },
+    "module": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "runtime", "data", "sha256"],
+      "properties": {
+        "id": {"$ref": "#/$defs/key"},
+        "runtime": {"const": "wasm@1"},
+        "data": {"type": "string", "contentEncoding": "base64"},
+        "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
+      }
+    },
+    "setting": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "type", "label"],
+      "properties": {
+        "key": {"$ref": "#/$defs/key"},
+        "type": {"enum": ["string", "secret", "number", "bool", "select", "textarea"]},
+        "label": {"$ref": "#/$defs/text"},
+        "help": {"$ref": "#/$defs/text"},
+        "placeholder": {"$ref": "#/$defs/text"},
+        "default": {},
+        "required": {"type": "boolean"},
+        "options": {"type": "array", "items": {"$ref": "#/$defs/option"}}
+      }
+    },
+    "option": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["value", "label"],
+      "properties": {"value": {"type": "string", "minLength": 1}, "label": {"$ref": "#/$defs/text"}}
+    }
+  }
+}

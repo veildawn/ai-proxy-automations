@@ -1,0 +1,32 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "AI Proxy automation marketplace index v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "automations"],
+  "properties": {
+    "version": {"const": 1},
+    "automations": {"type": "array", "items": {"$ref": "#/$defs/entry"}}
+  },
+  "$defs": {
+    "text": {"type": "object", "required": ["en"], "minProperties": 1, "additionalProperties": {"type": "string", "minLength": 1}},
+    "entry": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "version", "type", "name", "description", "capabilities", "publisher"],
+      "properties": {
+        "id": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"},
+        "version": {"type": "string", "minLength": 1},
+        "type": {"const": "automation"},
+        "name": {"$ref": "#/$defs/text"},
+        "description": {"$ref": "#/$defs/text"},
+        "capabilities": {"type": "array", "contains": {"const": "job"}, "items": {"type": "string"}},
+        "tags": {"type": "array", "uniqueItems": true, "items": {"type": "string"}},
+        "publisher": {"type": "string", "pattern": "^[a-z0-9][a-z0-9-]{0,63}$"},
+        "key_id": {"type": "string", "pattern": "^ed25519:[0-9a-f]{16}$"},
+        "min_app_version": {"type": "string"},
+        "updated_at": {"type": "string", "format": "date"}
+      }
+    }
+  }
+}

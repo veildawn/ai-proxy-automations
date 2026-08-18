@@ -1,0 +1,51 @@
+{
+  "manifest_version": 3,
+  "id": "quota-guard",
+  "type": "automation",
+  "version": "1.0.0",
+  "name": {
+    "en": "Quota Guard",
+    "zh": "额度预警巡检"
+  },
+  "description": {
+    "en": "Periodically inspects account quotas and triggers notifications on low remaining balance.",
+    "zh": "定时巡检上游账号额度与今日用量，并在剩余不足时触发通知。"
+  },
+  "author": "veildawn",
+  "publisher": "veildawn",
+  "signature": {
+    "alg": "ed25519",
+    "key_id": "ed25519:4da5f976df1e1bfb",
+    "sig": "dGKzZw1MQBzDcG6XE+R7cxd2THh8Gv5ENOTmxvwr3qPrivZ/OBNY6H7ciiyIYNyHwQ7Y0DckkPIzBokS5AmTDw=="
+  },
+  "provides": {
+    "jobs": [
+      {
+        "key": "inspect_quota",
+        "name": {
+          "en": "Inspect quota snapshot",
+          "zh": "巡检额度快照"
+        },
+        "module": "quota_guard_wasm",
+        "schedule": "0 */1 * * *",
+        "timeout": "30s",
+        "capabilities": {
+          "read": [
+            "quota",
+            "usage",
+            "accounts"
+          ],
+          "notify": true
+        }
+      }
+    ]
+  },
+  "modules": [
+    {
+      "id": "quota_guard_wasm",
+      "runtime": "wasm@1",
+      "data": "AGFzbQEAAAA=",
+      "sha256": "93a44bbb96c751218e4c00d479e4c14358122a389acca16205b1e4d0dc5f9476"
+    }
+  ]
+}
