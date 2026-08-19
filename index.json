@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "automations": [
+  "plugins": [
     {
       "id": "ops-notifier",
       "version": "1.0.0",
@@ -22,30 +22,6 @@
         "monitoring",
         "notifications",
         "operations",
-        "official"
-      ],
-      "publisher": "veildawn",
-      "updated_at": "2026-08-19",
-      "key_id": "ed25519:4da5f976df1e1bfb"
-    },
-    {
-      "id": "quota-guard",
-      "version": "1.0.0",
-      "type": "automation",
-      "name": {
-        "zh": "额度预警巡检",
-        "en": "Quota Guard"
-      },
-      "description": {
-        "zh": "定时巡检上游账号额度与今日用量，并在剩余不足时触发通知。",
-        "en": "Periodically inspects account quotas and triggers notifications on low remaining balance."
-      },
-      "capabilities": [
-        "job"
-      ],
-      "tags": [
-        "monitoring",
-        "quota",
         "official"
       ],
       "publisher": "veildawn",
