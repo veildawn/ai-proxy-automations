@@ -2,6 +2,33 @@
   "version": 1,
   "automations": [
     {
+      "id": "ops-notifier",
+      "version": "1.0.0",
+      "type": "automation",
+      "name": {
+        "en": "Ops Notifier",
+        "zh": "运维通知助手"
+      },
+      "description": {
+        "en": "Multi-channel account health alerts and daily AI Proxy operational digests.",
+        "zh": "多渠道推送账号健康告警与 AI Proxy 每日运营摘要。"
+      },
+      "capabilities": [
+        "job",
+        "wasm",
+        "notifications"
+      ],
+      "tags": [
+        "monitoring",
+        "notifications",
+        "operations",
+        "official"
+      ],
+      "publisher": "veildawn",
+      "updated_at": "2026-08-19",
+      "key_id": "ed25519:4da5f976df1e1bfb"
+    },
+    {
       "id": "quota-guard",
       "version": "1.0.0",
       "type": "automation",
