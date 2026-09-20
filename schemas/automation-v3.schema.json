@@ -80,7 +80,7 @@
       "required": ["id", "runtime", "data", "sha256"],
       "properties": {
         "id": {"$ref": "#/$defs/key"},
-        "runtime": {"const": "wasm@1"},
+        "runtime": {"const": "jobs@1"},
         "data": {"type": "string", "contentEncoding": "base64"},
         "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"}
       }

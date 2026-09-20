@@ -72,7 +72,7 @@
   "modules": [
     {
       "id": "main_runner",
-      "runtime": "wasm@1",
+      "runtime": "jobs@1",
       "data": "<BASE64_ENCODED_WASM_BYTES>",
       "sha256": "<SHA256_HEX_OF_WASM_BYTES>"
     }
@@ -164,7 +164,7 @@ fn check_and_alert_low_quota(account_id: &str, balance: f64, threshold: f64) {
 
 ### 必须导出的函数
 模块需向宿主导出以下符号：
-1. `memory`: 线性内存实例（最大限制 64 MiB）。
+1. `memory`: 线性内存实例（单实例上限 320 MiB，按需增长）。
 2. `alloc(size: i32) -> i32`: 内存分配函数。
 3. `run(input_ptr: i32, input_len: i32) -> i32`: 主执行入口，入参为包含 `plugin`、`job`、`settings` 的 UTF-8 JSON，返回 `0` 表示成功。
 
@@ -211,7 +211,37 @@ base64 -i plugin.wasm | tr -d '\n' > module.b64
 
 ---
 
-## 五、本地调试与上传安装
+## 五、市场仓库布局与签名
+
+网关按下列路径拉取市场内容（见 `ai-proxy-service/internal/plugin/market.go`）：
+
+```text
+index.json                     {"version": 1, "plugins": [...]}  市场索引
+plugins/<id>.json              已签名 Manifest（安装时实际下载的文件）
+plugins/<id>/versions/<v>.json 可选：指定版本 Manifest
+publishers/<handle>.json       发布者 Ed25519 公钥环
+revoke.json                    撤回列表
+```
+
+> `automations/` 是布局迁移前的旧目录，网关不会访问；请勿再把产物发布到那里。
+
+### 签名与重新签发
+
+市场包必须由发布者密钥签名，签名覆盖「除 `signature` 字段外的规范化工 JSON」，
+与网关 `plugin.Manifest.Canonical()` 逐字节一致。因此**改动 Manifest 的任何一个
+字段（包括 `runtime` 标签）都会让旧签名失效**，必须用种子重新签发：
+
+```bash
+# 种子默认位于 ~/.config/ai-proxy/marketplace-ed25519.seed（32 字节原始字节）
+go run scripts/sign_manifest.go plugins/<id>.json ~/.config/ai-proxy/marketplace-ed25519.seed
+```
+
+`scripts/validate.py` 会在 CI 中重放这套安装前校验（runtime 白名单、job→模块
+绑定、模块导出符号、签名），任何一项不通过都无法合入。
+
+---
+
+## 六、本地调试与上传安装
 
 1. **打包 Manifest**：将 Base64 字符串填入 `manifest.json` 的 `modules[0].data`，计算对应 `sha256`。
 2. **管理后台上传**：
