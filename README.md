@@ -1,6 +1,6 @@
 # AI Proxy Service 插件与代码扩展开发手册 (Plugin Developer Guide)
 
-欢迎开发 `ai-proxy-service` 自定义插件！本平台支持两类插件体系：
+欢迎开发 [AI Proxy](https://github.com/veildawn/ai-proxy-releases) 自定义插件！本平台支持两类插件体系：
 1. **集成插件 (`integration`)**：用于接入第三方模型供应商、OAuth 登录流、端点声明与多模型目录映射。
 2. **自动化与代码插件 (`automation`)**：支持用户**自带完整编译代码 (WebAssembly 沙箱运行时)**，执行**自定义配额查询、提示词清洗与重写、协议转换拦截、多账号智能健康巡检与告警通知**。
 
@@ -213,7 +213,7 @@ base64 -i plugin.wasm | tr -d '\n' > module.b64
 
 ## 五、市场仓库布局与签名
 
-网关按下列路径拉取市场内容（见 `ai-proxy-service/internal/plugin/market.go`）：
+网关按下列路径拉取市场内容（见 [ai-proxy-releases](https://github.com/veildawn/ai-proxy-releases)）：
 
 ```text
 index.json                     {"version": 1, "plugins": [...]}  市场索引
@@ -245,7 +245,7 @@ go run scripts/sign_manifest.go plugins/<id>.json ~/.config/ai-proxy/marketplace
 
 1. **打包 Manifest**：将 Base64 字符串填入 `manifest.json` 的 `modules[0].data`，计算对应 `sha256`。
 2. **管理后台上传**：
-   - 登录 `ai-proxy-service` Web 管理后台；
+   - 登录 [AI Proxy](https://github.com/veildawn/ai-proxy-releases) Web 管理后台；
    - 进入 **「自动化 (Automations)」** 或 **「集成 (Integrations)」** 页面；
    - 点击 **「导入 Manifest」**，选择本地编写好的 `.json` 文件一键安装。
 3. **私有市场分发**：
