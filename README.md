@@ -248,6 +248,6 @@ go run scripts/sign_manifest.go plugins/<id>.json ~/.config/ai-proxy/marketplace
    - 登录 [AI Proxy](https://github.com/veildawn/ai-proxy-releases) Web 管理后台；
    - 进入 **「自动化 (Automations)」** 或 **「集成 (Integrations)」** 页面；
    - 点击 **「导入 Manifest」**，选择本地编写好的 `.json` 文件一键安装。
-3. **市场分发**：
-   - 将 Manifest 提交到 [ai-proxy-releases](https://github.com/veildawn/ai-proxy-releases)；
+3. **私有市场分发**：
+   - 将 Manifest 提交到私有仓库 `veildawn/ai-proxy-automations` / `veildawn/ai-provider-plugins`；
    - 网关配置了对应 Registry 后，即可在市场列表中一键点击下载与平滑升级！
